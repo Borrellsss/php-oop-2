@@ -1,5 +1,10 @@
 <?php
+require_once __DIR__ . "/../traits/ProductCode.php";
+
 class AnimalProduct {
+    // *TRAITS
+    use ProductCode;
+
     public $type;
     public $animal;
     public $brand;

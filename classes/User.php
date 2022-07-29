@@ -6,7 +6,7 @@ class User {
     protected $products = [];
     protected $discount = 0;
     protected $finalPrice = 0;
-    public $availableBalance = 0;
+    
 
     // *FUNCTIONS
     public function __construct($_name, $_lastName, $_email) {
@@ -27,6 +27,13 @@ class User {
     public function getFinalPrice() {
         $this->finalPrice = $this->calcPrice();
         return $this->finalPrice -= $this->finalPrice * $this->discount;
+    }
+    public function payAction($card) {
+        if($card->availableBalance >= $this->getFinalPrice()) {
+            return true;
+        } else {
+            throw new Exception("<span style='color: red;'>Transazione non riuscita, controlla il saldo e ritenta.</span>");
+        }
     }
     public function getDiscount() {
         return $this->discount;

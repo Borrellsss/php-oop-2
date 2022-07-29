@@ -9,30 +9,37 @@ require_once __DIR__ . "../classes/PetFood.php";
 require_once __DIR__ . "../classes/PetToy.php";
 require_once __DIR__ . "../classes/AnonymousUser.php";
 require_once __DIR__ . "../classes/RegisteredUser.php";
+require_once __DIR__ . "../classes/PrePaidCard.php";
 
 // *pet beds
 $firstPetBed = new PetBed("pet bed", "cat", 14);
 $firstPetBed->size = "s";
+$firstPetBed->code = 1234211221;
 
 // *pet foods
 $firstPetFood = new PetFood("croquettes", "cat", 40);
 $firstPetFood->brand = "Royal Canin";
 $firstPetFood->size = 10;
+$firstPetFood->code = 5537711115;
 
 $secondPetFood = new PetFood("croquettes", "cat", 24);
 $secondPetFood->brand = "Trainer";
 $secondPetFood->size = 4;
+$secondPetFood->code = 2273548901;
 
 $thirdPetFood = new PetFood("gravy", "cat", 3);
 $thirdPetFood->brand = "Royal Canin";
 $thirdPetFood->size = 0.3;
+$thirdPetFood->code = 1111123546;
 
 // *pet toys
 $firstPetToy = new PetToy("ball", "cat", 1);
 $firstPetToy->size = "xs";
+$firstPetToy->code = 9987564876;
 
 $secondPetToy = new PetToy("stick", "cat", 5.50);
 $secondPetToy->size = "m";
+$secondPetToy->code = 2256435789;
 
 // *anonymous users
 $firstAnonymousUser = new AnonymousUser("Marco", "Rossi", "marcorossi@gmail.com");
@@ -46,6 +53,13 @@ $firstRegisteredUser = new RegisteredUser("Laura", "Bianchi", "laurabianchi@gmai
 $firstRegisteredUser->addProduct($firstPetFood);
 $firstRegisteredUser->addProduct($secondPetFood);
 $firstRegisteredUser->addProduct($secondPetToy);
+
+// *prepaid cards
+$firstPrePaidCard = new PrePaidCard($firstAnonymousUser, 1234567890, 232, "05/25");
+$firstPrePaidCard->availableBalance = 200;
+
+$secondPrePaidCard = new PrePaidCard($firstRegisteredUser, 2237761223, 110, "07/23");
+$secondPrePaidCard->availableBalance = 55.6;
 
 // !DEBUG
 // var_dump($firstAnonymousUser->getProducts());
@@ -101,6 +115,10 @@ $firstRegisteredUser->addProduct($secondPetToy);
                     <?php } ?>
                 </div>
                 <div>
+                    <strong style="color: red;">Product code:</strong>
+                    <?php echo $product->code; ?>
+                </div>
+                <div>
                     <strong style="color: red;">Price:</strong>
                     <?php echo $product->price . "€"; ?>
                 </div>
@@ -110,6 +128,25 @@ $firstRegisteredUser->addProduct($secondPetToy);
     <div style="margin-top: 1rem;">
         <strong style="color: red;">Total:</strong>
         <?php echo $firstAnonymousUser->getFinalPrice() . "€"; ?>
+    </div>
+    <div style="margin-top: 1rem;">
+        <strong style="color: red;">Available balance:</strong>
+        <?php echo $firstPrePaidCard->availableBalance . "€"; ?>
+    </div>
+    <div style="margin-top: 1rem;">
+        <strong style="color: red;">Available balance after payment:</strong>
+        <?php echo $firstPrePaidCard->availableBalance - $firstAnonymousUser->getFinalPrice() . "€"; ?>
+    </div>
+    <div style="margin-top: 1rem;">
+        <?php
+            try {
+                if($firstAnonymousUser->payAction($firstPrePaidCard)) {
+                    echo "<span>pagamento effettuato. Grazie per averci scelto!</span>";
+                }
+            } catch(Exception $error) {
+                echo $error->getMessage();
+            }
+        ?>
     </div>
            
     <div style="margin-top: 2rem;">
@@ -146,6 +183,10 @@ $firstRegisteredUser->addProduct($secondPetToy);
                     <?php } ?>
                 </div>
                 <div>
+                    <strong style="color: red;">Product code:</strong>
+                    <?php echo $product->code; ?>
+                </div>
+                <div>
                     <strong style="color: red;">Price:</strong>
                     <?php echo $product->price . "€"; ?>
                 </div>
@@ -155,6 +196,26 @@ $firstRegisteredUser->addProduct($secondPetToy);
     <div style="margin-top: 1rem;">
         <strong style="color: red;">Total:</strong>
         <?php echo $firstRegisteredUser->getFinalPrice() . "€"; ?>
+    </div>
+    <div style="margin-top: 1rem;">
+        <strong style="color: red;">Available balance:</strong>
+        <?php echo $secondPrePaidCard->availableBalance . "€"; ?>
+    </div>
+    <div style="margin-top: 1rem;">
+        <strong style="color: red;">Available balance after payment:</strong>
+        <?php echo $secondPrePaidCard->availableBalance - $firstRegisteredUser->getFinalPrice() . "€"; ?>
+    </div>
+    <div style="margin-top: 1rem;">
+        <?php
+            try {
+                if($firstRegisteredUser->payAction($secondPrePaidCard)) {
+                    echo "<span>Pagamento effettuato. Grazie per averci scelto!</span>";
+                }
+            } catch(Exception $error) {
+                error_log($firstRegisteredUser);
+                echo $error->getMessage();
+            }
+        ?>
     </div>
 </body>
 </html>
