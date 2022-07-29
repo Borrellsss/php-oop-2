@@ -212,7 +212,6 @@ $secondPrePaidCard->availableBalance = 55.6;
                     echo "<span>Pagamento effettuato. Grazie per averci scelto!</span>";
                 }
             } catch(Exception $error) {
-                error_log($firstRegisteredUser);
                 echo $error->getMessage();
             }
         ?>
